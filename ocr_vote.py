@@ -28,10 +28,25 @@ def ocr_vote():
     tick_boxes = detect_tick_boxes(image)
     candidates = extract_candidates(image, tick_boxes)
     os.remove(filepath)
-    return jsonify({
-        'serial_number': serial,
-        'selected_candidates': candidates
-    })
+    # New response format
+    response = {
+        "ballot": {
+            "serial_no": serial,
+            "positions": [
+                {
+                    "position": "Position 1",  # replace with actual position names if available
+                    "candidates": [
+                        {
+                            "name": candidate["name"],
+                            "member_id": candidate["membership"],
+                            "vote": True
+                        } for candidate in candidates
+                    ]
+                }
+            ]
+        }
+    }
+    return jsonify(response)
 
 def extract_serial_number(image):
     h, w = image.shape[:2]
